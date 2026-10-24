@@ -13,10 +13,19 @@ const OTHERS = CATEGORIES.filter((c) => c.slug !== "microsoft-certifications");
 const TOTAL_SERVICES = CATEGORIES.reduce((n, c) => n + c.services.length, 0);
 
 /* 1–2 · Hero: tabbed headline (the 4 slide topics) + duotone photo in a quarter circle */
-const HERO_ORDER = [1, 0, 2, 3]; // Microsoft first, then the other slides
+const GENERAL = {
+  tag: "All Services",
+  title: "Everything Your Business Needs",
+  text: "Registration, logo & branding, websites, social media, AI tools and Microsoft certifications — all in one place, handled by experts, 100% online.",
+  cta: "Get Free Consultation",
+  link: "/contact",
+  linkText: "Get Free Consultation",
+};
+// general first, Microsoft last
+const HERO_SLIDES = [GENERAL, SLIDES[0], SLIDES[2], SLIDES[3], SLIDES[1]];
 function Hero() {
   const [i, setI] = useState(0);
-  const s = SLIDES[HERO_ORDER[i]];
+  const s = HERO_SLIDES[i];
   const words = s.title.split(" ");
   const last = words.pop();
   return (
@@ -24,9 +33,9 @@ function Hero() {
       <div className="container-x grid items-stretch gap-10 pt-10 lg:grid-cols-[1.05fr_1fr] lg:pt-0">
         <div className="flex flex-col justify-center py-4 lg:py-16">
           <div className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0" role="tablist" aria-label="Choose a topic">
-            {HERO_ORDER.map((idx, k) => (
+            {HERO_SLIDES.map((sl, k) => (
               <button
-                key={SLIDES[idx].tag}
+                key={sl.tag}
                 role="tab"
                 aria-selected={k === i}
                 onClick={() => setI(k)}
@@ -34,7 +43,7 @@ function Hero() {
                   k === i ? "border-royal bg-royal text-white" : "border-ink/25 text-ink/70 hover:border-ink hover:text-ink"
                 }`}
               >
-                {SLIDES[idx].tag}
+                {sl.tag}
               </button>
             ))}
           </div>
