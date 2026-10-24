@@ -23,6 +23,8 @@ const GENERAL = {
 };
 // general first, Microsoft last
 const HERO_SLIDES = [GENERAL, SLIDES[0], SLIDES[2], SLIDES[3], SLIDES[1]];
+/** One banner photo per tab, same order as HERO_SLIDES (file names match the photo prompts). */
+const HERO_IMAGES = ["hero.jpg", "hero-registration.jpg", "hero-branding.jpg", "hero-website.jpg", "hero-microsoft.jpg"].map((f) => asset(`/images/${f}`));
 function Hero() {
   const [i, setI] = useState(0);
   const [paused, setPaused] = useState(false);
@@ -72,7 +74,15 @@ function Hero() {
         {/* composition: cobalt quarter circle + duotone photo + red circle + yellow triangle */}
         <div className="relative min-h-[360px] sm:min-h-[460px] lg:min-h-[560px]">
           <div className="absolute bottom-0 right-0 h-[92%] w-[94%] overflow-hidden rounded-tl-[100%] bg-royal">
-            <Duo src={asset("/images/hero.jpg")} eager className="absolute inset-0 !bg-transparent" imgClassName="object-[60%_20%] opacity-90" />
+            {HERO_IMAGES.map((src, k) => (
+              <Duo
+                key={src}
+                src={src}
+                eager
+                className={`absolute inset-0 !bg-transparent transition-opacity duration-1000 ${k === i ? "opacity-100" : "opacity-0"}`}
+                imgClassName="object-[60%_20%] opacity-90"
+              />
+            ))}
           </div>
           <span className="float-y absolute left-[2%] top-[4%] h-14 w-14 rounded-full bg-brand sm:left-[6%] sm:top-[8%] sm:h-28 sm:w-28" />
           <svg className="absolute bottom-[4%] left-0 h-12 w-12 sm:bottom-[6%] sm:left-[2%] sm:h-24 sm:w-24" viewBox="0 0 24 24" aria-hidden>
