@@ -1,0 +1,206 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+:root {
+  --radius: 0.625rem;
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: oklch(0.205 0 0);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: oklch(0.708 0 0);
+}
+
+.dark {
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.205 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.205 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.922 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.556 0 0);
+  --chart-1: oklch(0.488 0.243 264.376);
+  --chart-2: oklch(0.696 0.17 162.48);
+  --chart-3: oklch(0.769 0.188 70.08);
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
+  --sidebar: oklch(0.205 0 0);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.556 0 0);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+@theme {
+  --font-sans: "Archivo", ui-sans-serif, system-ui, sans-serif;
+  /* admin-editable (Admin → Logo & Colours): ink, cobalt, red */
+  --color-navy: #0e0f12;
+  --color-navy-2: color-mix(in srgb, var(--color-navy) 82%, white);
+  --color-royal: #1f45c4;
+  --color-brand: #e0452f;
+  --color-brand-dark: color-mix(in srgb, var(--color-brand) 85%, black);
+  /* Bauhaus extras */
+  --color-sun: #f2b705;
+  --color-cream: #f4efe3;
+  --color-paper: #fbf8f1;
+  --color-ink: #0e0f12;
+  --color-wa: #25d366;
+  --color-surface: #f4efe3;
+  --color-line: #d8d0bd;
+  --color-body: #34352f;
+}
+
+html { scroll-behavior: smooth; }
+body { font-family: var(--font-sans); color: var(--color-body); background: var(--color-cream); -webkit-font-smoothing: antialiased; }
+h1, h2, h3, h4 { color: var(--color-navy); letter-spacing: -0.02em; }
+
+@layer components {
+  .btn-brand {
+    @apply inline-flex items-center justify-center gap-2 border-2 border-brand bg-brand px-6 py-3 text-[15px] font-bold text-white transition hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[4px_4px_0_var(--color-ink)] disabled:opacity-60 disabled:hover:translate-x-0 disabled:hover:translate-y-0 disabled:hover:shadow-none;
+  }
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 border-2 border-ink bg-transparent px-6 py-3 text-[15px] font-bold text-ink transition hover:bg-ink hover:text-white;
+  }
+  .btn-ink {
+    @apply inline-flex items-center justify-center gap-2 border-2 border-ink bg-ink px-6 py-3 text-[15px] font-bold text-white transition hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[4px_4px_0_var(--color-paper)];
+  }
+  .btn-outline-light {
+    @apply inline-flex items-center justify-center gap-2 border-2 border-white bg-transparent px-6 py-3 text-[15px] font-bold text-white transition hover:bg-white hover:text-ink;
+  }
+  .field {
+    @apply h-12 w-full border-[1.5px] border-ink/70 bg-paper px-4 text-[15px] text-ink outline-none transition placeholder:text-[#8b8a80] focus:border-royal focus:bg-white focus:ring-2 focus:ring-royal/25;
+  }
+  .container-x { @apply mx-auto w-full max-w-[1240px] px-4 sm:px-6 lg:px-8; }
+  .label-caps { @apply text-[12px] font-bold uppercase tracking-[0.12em]; }
+  /* Bauhaus card: thick ink border + hard offset shadow on hover */
+  .card-bh { @apply border-2 border-ink bg-paper transition duration-200; }
+  .card-bh-hover { @apply hover:-translate-x-1 hover:-translate-y-1 hover:shadow-[6px_6px_0_var(--color-ink)]; }
+}
+
+/* Cobalt duotone: wrap any <img> in .duo — highlights stay light, shadows go deep blue. */
+@layer components { .duo { position: relative; isolation: isolate; overflow: hidden; background: #0d1d63; } }
+.duo > img { filter: grayscale(1) contrast(1.12) brightness(1.04); }
+.duo::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: var(--color-royal); mix-blend-mode: color;
+}
+.duo::before {
+  content: ""; position: absolute; inset: 0; pointer-events: none; z-index: 1;
+  background: linear-gradient(180deg, rgba(31,69,196,0.18), rgba(13,29,99,0.28)); mix-blend-mode: multiply;
+}
+.stripes { background-image: repeating-linear-gradient(-45deg, rgba(255,255,255,0.9) 0 6px, transparent 6px 16px); }
+
+@keyframes rise { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+.rise { animation: rise .7s cubic-bezier(.2,.7,.2,1) both; }
+@keyframes spin-slow { to { transform: rotate(360deg); } }
+.spin-slow { animation: spin-slow 22s linear infinite; }
+@keyframes float-y { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+.float-y { animation: float-y 5s ease-in-out infinite; }
+@keyframes marquee { to { transform: translateX(-50%); } }
+
+/* Admin panel: its own neutral CMS look, independent of the website's brand colours. */
+.admin-theme {
+  font-family: "Poppins", ui-sans-serif, system-ui, sans-serif;
+  --color-navy: #0f172a;
+  --color-navy-2: #1e293b;
+  --color-royal: #2563eb;
+  --color-brand: #2563eb;
+  --color-brand-dark: #1d4ed8;
+  --color-surface: #f1f5f9;
+  --color-line: #e2e8f0;
+  --color-body: #475569;
+}
+.admin-theme .btn-brand {
+  @apply rounded-lg border-0 shadow-none hover:translate-x-0 hover:translate-y-0 hover:shadow-none;
+}
+.admin-theme .field {
+  @apply rounded-lg border border-slate-200 bg-white text-slate-800;
+}
