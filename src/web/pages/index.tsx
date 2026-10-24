@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "wouter";
 import { ArrowRight, Minus, Plus, Star } from "lucide-react";
 import { CATEGORIES, POPULAR, SLIDES, serviceUrl, waLink } from "../lib/site";
@@ -25,11 +25,18 @@ const GENERAL = {
 const HERO_SLIDES = [GENERAL, SLIDES[0], SLIDES[2], SLIDES[3], SLIDES[1]];
 function Hero() {
   const [i, setI] = useState(0);
+  const [paused, setPaused] = useState(false);
+  // change topic every 5 seconds (pauses while the mouse is over the hero)
+  useEffect(() => {
+    if (paused) return;
+    const t = setTimeout(() => setI((v) => (v + 1) % HERO_SLIDES.length), 5000);
+    return () => clearTimeout(t);
+  }, [i, paused]);
   const s = HERO_SLIDES[i];
   const words = s.title.split(" ");
   const last = words.pop();
   return (
-    <section className="relative overflow-hidden bg-cream">
+    <section className="relative overflow-hidden bg-cream" onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)}>
       <div className="container-x grid items-stretch gap-10 pt-10 lg:grid-cols-[1.05fr_1fr] lg:pt-0">
         <div className="flex flex-col justify-center py-4 lg:py-16">
           <div className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0" role="tablist" aria-label="Choose a topic">
