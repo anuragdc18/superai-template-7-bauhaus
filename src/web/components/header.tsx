@@ -5,6 +5,7 @@ import { ChevronDown, Clock, Mail, Menu, Minus, Phone, Plus, X, ArrowRight, Layo
 import { CATEGORIES, serviceUrl, waLink } from "../lib/site";
 import { telHref, useSite } from "../queries/site";
 import { authClient } from "../lib/auth";
+import { useExtraLinks } from "./content-ui";
 
 export function Logo({ light = false }: { light?: boolean }) {
   const site = useSite();
@@ -32,6 +33,7 @@ function WaIcon({ className = "h-4 w-4" }: { className?: string }) {
 export { WaIcon };
 
 export function Header() {
+  const extra = useExtraLinks();
   const [open, setOpen] = useState(false);
   const [acc, setAcc] = useState<string | null>("registration");
   const [scrolled, setScrolled] = useState(false);
@@ -82,10 +84,10 @@ export function Header() {
         <div className="container-x flex h-[74px] items-center gap-4">
           <Logo />
 
-          <nav className="ml-auto hidden items-center min-[1150px]:flex">
+          <nav className="ml-auto hidden items-center min-[1280px]:flex">
             <Link
               to="/"
-              className={`px-2.5 py-2 text-[14px] font-semibold xl:px-3 xl:text-[14.5px] ${loc === "/" ? "text-brand" : "text-ink hover:text-brand"}`}
+              className={`px-2 py-2 text-[14px] font-semibold xl:text-[14.5px] ${loc === "/" ? "text-brand" : "text-ink hover:text-brand"}`}
             >
               Home
             </Link>
@@ -93,7 +95,7 @@ export function Header() {
               <div key={c.slug} className="group relative">
                 <Link
                   to={`/services/${c.slug}`}
-                  className={`flex items-center gap-1 whitespace-nowrap px-2.5 py-2 text-[14px] font-semibold transition xl:px-3 xl:text-[14.5px] ${
+                  className={`flex items-center gap-1 whitespace-nowrap px-2 py-2 text-[14px] font-semibold transition xl:text-[14.5px] ${
                     loc.startsWith(`/services/${c.slug}`) ? "text-brand" : "text-ink group-hover:text-brand"
                   }`}
                 >
@@ -123,13 +125,34 @@ export function Header() {
                 </div>
               </div>
             ))}
+            {extra.length > 0 && (
+              <div className="group relative">
+                <button type="button" className={`flex items-center gap-1 whitespace-nowrap px-2 py-2 text-[14px] font-semibold transition xl:text-[14.5px] ${extra.some((x) => loc.startsWith(x.to)) ? "text-brand" : "text-ink group-hover:text-brand"}`}>
+                  More
+                  <ChevronDown className="h-3.5 w-3.5 transition group-hover:rotate-180" />
+                </button>
+                <div className="invisible absolute right-0 top-full w-[220px] translate-y-2 pt-3 opacity-0 transition duration-200 group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100">
+                  <div className="border-2 border-ink bg-paper shadow-[6px_6px_0_var(--color-ink)]">
+                    <div className="h-1.5 bg-sun" />
+                    <div className="p-2">
+                    {[...extra, { to: "/contact", label: "Contact Us" }].map((x) => (
+                      <Link key={x.to} to={x.to} className="flex items-center gap-2.5 px-3 py-2.5 text-[14px] font-medium text-ink hover:bg-cream hover:text-royal">
+                        <span className="h-2 w-2 bg-brand" />
+                        {x.label}
+                      </Link>
+                    ))}
+                  </div>
+                  </div>
+                </div>
+              </div>
+            )}
           </nav>
 
-          <Link to="/contact" className="btn-brand !hidden shrink-0 whitespace-nowrap !px-5 !py-2.5 !text-[14px] min-[1150px]:!ml-3 min-[1150px]:!inline-flex">
+          <Link to="/contact" className="btn-brand !hidden shrink-0 whitespace-nowrap !px-5 !py-2.5 !text-[14px] min-[1280px]:!ml-3 min-[1280px]:!inline-flex">
             Get Started
           </Link>
 
-          <div className="ml-auto flex items-center gap-2 min-[1150px]:hidden">
+          <div className="ml-auto flex items-center gap-2 min-[1280px]:hidden">
             <Link to="/contact" className="btn-brand !hidden !px-4 !py-2 !text-[13px] sm:!inline-flex">Get Started</Link>
             <button onClick={() => setOpen(true)} className="grid h-11 w-11 place-items-center border-2 border-ink text-ink" aria-label="Open menu">
               <Menu className="h-5 w-5" />
@@ -139,7 +162,7 @@ export function Header() {
       </header>
 
       {/* Mobile drawer */}
-      <div className={`fixed inset-0 z-[60] min-[1150px]:hidden ${open ? "" : "pointer-events-none"}`}>
+      <div className={`fixed inset-0 z-[60] min-[1280px]:hidden ${open ? "" : "pointer-events-none"}`}>
         <button
           type="button"
           aria-label="Close menu overlay"
@@ -184,6 +207,11 @@ export function Header() {
                 </div>
               );
             })}
+            {[...extra, { to: "/contact", label: "Contact Us" }].map((x) => (
+              <Link key={x.to} to={x.to} className="block border-b border-ink/15 py-3.5 font-bold text-ink">
+                {x.label}
+              </Link>
+            ))}
             {session && (
               <Link to="/admin/dashboard" className="block py-3.5 font-bold text-royal">
                 Owner Dashboard

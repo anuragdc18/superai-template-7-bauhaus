@@ -6,6 +6,7 @@ import { asset } from "../lib/demo";
 import { useSite } from "../queries/site";
 import { LeadForm } from "../components/lead-form";
 import { WaIcon } from "../components/header";
+import { useContent } from "../queries/content";
 import { BAR, Duo, RHYTHM, Shape, SectionTitle, toneBg } from "../components/bauhaus";
 
 const MS = CATEGORIES.find((c) => c.slug === "microsoft-certifications")!;
@@ -24,7 +25,7 @@ const GENERAL = {
 // general first, Microsoft last
 const HERO_SLIDES = [GENERAL, SLIDES[0], SLIDES[2], SLIDES[3], SLIDES[1]];
 /** One banner photo per tab, same order as HERO_SLIDES (file names match the photo prompts). */
-const HERO_IMAGES = ["hero.jpg", "hero-registration.jpg", "hero-branding.jpg", "hero-website.jpg", "hero-microsoft.jpg"].map((f) => asset(`/images/${f}`));
+const HERO_IMAGES = ["hero.jpg", "hero-registration.jpg", "hero-branding.jpg", "hero-website.jpg", "hero-microsoft.jpg"].map((f) => `/images/${f}`);
 function Hero() {
   const [i, setI] = useState(0);
   const [paused, setPaused] = useState(false);
@@ -77,7 +78,7 @@ function Hero() {
             {HERO_IMAGES.map((src, k) => (
               <Duo
                 key={src}
-                src={src}
+                src={asset(src)}
                 eager
                 className={`absolute inset-0 !bg-transparent transition-opacity duration-1000 ${k === i ? "opacity-100" : "opacity-0"}`}
                 imgClassName="object-[60%_20%] opacity-90"
@@ -111,13 +112,15 @@ function EnquiryBox() {
 }
 
 /* 4 · yellow stats band */
-const STATS = [
+const BASE_STATS = [
   { big: "4.8", small: "Google Rating" },
   { big: "1,000+", small: "Happy Clients" },
   { big: "Pan-India", small: "Service Coverage" },
   { big: "100%", small: "Online Process" },
 ];
 function StatsBand() {
+  const rating = useContent().reviewsSection.rating;
+  const STATS = BASE_STATS.map((s) => (s.small === "Google Rating" ? { ...s, big: rating } : s)).filter((s) => s.big);
   return (
     <section className="border-y-2 border-ink bg-sun">
       <div className="container-x grid grid-cols-2 md:grid-cols-4">
@@ -358,12 +361,10 @@ const WHY = [
   { title: "Fully online", text: "Do everything from your phone, from anywhere in India." },
   { title: "Real experts", text: "CA, CS and design experts guide you at every step." },
 ];
-const REVIEWS = [
-  { name: "Ravi K.", city: "Hyderabad", text: "My GST and company registration were done in a week. Very smooth, and they explained everything simply." },
-  { name: "Priya S.", city: "Bengaluru", text: "They designed our logo and website together. Looks very professional and customers notice it." },
-  { name: "Arjun M.", city: "Pune", text: "Our Instagram enquiries doubled in 2 months. The team posts on time every week." },
-];
 function TrustReviews() {
+  const content = useContent();
+  const rs = content.reviewsSection;
+  const REVIEWS = rs.show ? content.reviews.slice(0, 3) : [];
   return (
     <section className="bg-cream py-16 sm:py-20">
       <div className="container-x grid gap-12 lg:grid-cols-[1fr_1.55fr]">
@@ -381,48 +382,47 @@ function TrustReviews() {
             ))}
           </ul>
         </div>
+        {REVIEWS.length > 0 && (
         <div>
           <div className="flex flex-wrap items-end justify-between gap-3">
             <h2 className="text-[28px] font-black leading-tight sm:text-[32px]">What Our Clients Say</h2>
-            <p className="flex items-center gap-2 text-[15px] font-bold text-ink">
-              <span className="text-[30px] font-black leading-none">4.8</span>
-              <span className="flex text-sun">{[0, 1, 2, 3, 4].map((k) => <Star key={k} className="h-5 w-5 fill-current" />)}</span>
-              on Google
-            </p>
+            {rs.rating && (
+              <a href={rs.googleUrl || undefined} target="_blank" rel="noreferrer" className="flex items-center gap-2 text-[15px] font-bold text-ink">
+                <span className="text-[30px] font-black leading-none">{rs.rating}</span>
+                <span className="flex text-sun">{[0, 1, 2, 3, 4].map((k) => <Star key={k} className="h-5 w-5 fill-current" />)}</span>
+                on Google{rs.ratingCount ? ` (${rs.ratingCount})` : ""}
+              </a>
+            )}
           </div>
           <div className="mt-6 grid gap-5 md:grid-cols-3">
             {REVIEWS.map((r, i) => (
-              <figure key={r.name} className="card-bh flex flex-col p-5">
-                <span className="text-[44px] font-black leading-none" style={{ color: toneBg(BAR[i]) }}>“</span>
+              <figure key={r.id} className="card-bh flex flex-col p-5">
+                <span className="text-[44px] font-black leading-none" style={{ color: toneBg(BAR[i % BAR.length]) }}>“</span>
                 <blockquote className="-mt-3 flex-1 text-[15px] leading-relaxed text-ink">{r.text}</blockquote>
                 <figcaption className="mt-5 flex items-center gap-3 border-t border-ink/15 pt-4">
-                  <span className="grid h-10 w-10 place-items-center rounded-full text-[15px] font-black text-white" style={{ background: toneBg(["red", "blue", "ink"][i] as "red") }}>
+                  <span className="grid h-10 w-10 place-items-center rounded-full text-[15px] font-black text-white" style={{ background: toneBg(["red", "blue", "ink"][i % 3] as "red") }}>
                     {r.name[0]}
                   </span>
                   <span>
                     <span className="block font-extrabold text-ink">{r.name}</span>
-                    <span className="text-[13px] text-ink/60">{r.city}</span>
+                    <span className="text-[13px] text-ink/60">{r.place}</span>
                   </span>
                 </figcaption>
               </figure>
             ))}
           </div>
         </div>
+        )}
       </div>
     </section>
   );
 }
 
 /* 11 · FAQ as a bordered table */
-const FAQS = [
-  { q: "Do I need to visit your office?", a: "No. Everything is done online. You can share documents on WhatsApp or email." },
-  { q: "How long does GST registration take?", a: "Usually 3 to 7 working days, once we have all your documents." },
-  { q: "Can you do registration and the website together?", a: "Yes. Many clients start with registration and logo, then add a website. We offer combo prices." },
-  { q: "How do I pay?", a: "You can pay by UPI, debit/credit card or bank transfer. You get a proper GST invoice." },
-  { q: "I'm not sure which registration I need. Can you help?", a: "Yes — that's what the free consultation is for. Our expert will suggest the right option for you." },
-];
 function Faq() {
   const [open, setOpen] = useState<number | null>(0);
+  const FAQS = useContent().faqs;
+  if (!FAQS.length) return null;
   return (
     <section className="bg-cream pb-16 sm:pb-20">
       <div className="container-x">
@@ -433,7 +433,7 @@ function Faq() {
           {FAQS.map((f, i) => {
             const isOpen = open === i;
             return (
-              <div key={f.q} className={i > 0 ? "border-t-[1.5px] border-ink" : ""}>
+              <div key={f.id} className={i > 0 ? "border-t-[1.5px] border-ink" : ""}>
                 <button onClick={() => setOpen(isOpen ? null : i)} aria-expanded={isOpen} className="flex w-full items-center gap-4 px-5 py-4 text-left">
                   <span className="hidden w-8 shrink-0 text-[13px] font-black text-ink/40 sm:block">0{i + 1}</span>
                   <span className="flex-1 text-[15.5px] font-bold text-ink">{f.q}</span>
@@ -449,6 +449,40 @@ function Faq() {
               </div>
             );
           })}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* latest blog posts — bauhaus cards */
+function LatestPosts() {
+  const content = useContent();
+  if (!content.blog.show || !content.posts.length) return null;
+  return (
+    <section className="bg-cream pb-16 sm:pb-20">
+      <div className="container-x">
+        <div className="flex flex-wrap items-end justify-between gap-4">
+          <SectionTitle label={content.blog.title || "Blog"} title="Tips & Guides" />
+          <Link to="/blog" className="mb-9 inline-flex items-center gap-1.5 text-[15px] font-extrabold text-brand hover:gap-2.5">
+            See all articles <ArrowRight className="h-4 w-4" />
+          </Link>
+        </div>
+        <div className="grid gap-5 md:grid-cols-3">
+          {content.posts.slice(0, 3).map((p, i) => (
+            <Link key={p.id} to={`/blog/${p.slug}`} className="card-bh card-bh-hover group flex flex-col overflow-hidden">
+              <div className="h-2" style={{ background: toneBg(BAR[i % BAR.length]) }} />
+              {p.image && <img src={p.image} alt={p.imageAlt || p.title} loading="lazy" className="aspect-[16/9] w-full border-b-2 border-ink object-cover" />}
+              <div className="flex flex-1 flex-col p-5">
+                {p.category && <span className="label-caps text-royal">{p.category}</span>}
+                <h3 className="mt-2 text-[18px] font-extrabold leading-snug text-ink group-hover:text-brand">{p.title}</h3>
+                {p.excerpt && <p className="mt-2 line-clamp-3 text-[14.5px]">{p.excerpt}</p>}
+                <span className="mt-auto inline-flex items-center gap-1 pt-4 text-[14px] font-extrabold text-ink">
+                  Read more <ArrowRight className="h-4 w-4" />
+                </span>
+              </div>
+            </Link>
+          ))}
         </div>
       </div>
     </section>
@@ -489,6 +523,7 @@ export default function Index() {
       <Process />
       <India />
       <TrustReviews />
+      <LatestPosts />
       <Faq />
       <CtaBand />
     </>
